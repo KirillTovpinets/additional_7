@@ -1,5 +1,10 @@
 module.exports = function solveSudoku(matrix) {
+  		var attempts = 0;
   		function solve(){
+  			if (attempts > 500) {
+	  				return false;
+	  			}
+	  		attempts++;
 		   	if (!simpleSolution()) {
 		     	return false;
 		     }
@@ -22,7 +27,7 @@ module.exports = function solveSudoku(matrix) {
 		     var possibleCells = getPossibleValues(raw,cell);
 		     var bufferMatrix, result;
 		     for(var i = 0; i < possibleCells.length; i++){
-		         bufferMatrix = matrix.slice(0);
+		         bufferMatrix = matrix.map(r => [...r]);
 		         matrix[raw][cell] = possibleCells[i];
 		
 		         result = solve();
@@ -30,7 +35,7 @@ module.exports = function solveSudoku(matrix) {
 		         	return true;
 		         }
 		         else{
-		             matrix = bufferMatrix.slice(0);
+		             matrix = bufferMatrix.map(r => [...r]);
 		         }
 		     }
 		     return false;
@@ -67,24 +72,27 @@ module.exports = function solveSudoku(matrix) {
 	    }
 	
 	    function simpleSolution(){ 
-	        var possibleCells = [];
+	        var possibleValues = [];
 	        var changed = false;
 	
 	        while(true) {
 	            changed = false;
 	            for (var i = 0; i < matrix.length; i++) {
 	                for (var j = 0; j < matrix.length; j++) {
-	                    possibleCells = getPossibleValues(i, j);
-	                    if (possibleCells == false) continue; 
+	                    possibleValues = getPossibleValues(i, j);
+	                    if (possibleValues == false) continue; 
 	
-	                    if (possibleCells.length === 0){
+	                    if (possibleValues.length === 0){
 	                    	return false;
 	                    }
 	
-	                    if (possibleCells.length == 1) { 
-	                        matrix[i][j] = possibleCells[0];
+	                    if (possibleValues.length == 1) { 
+	                        matrix[i][j] = possibleValues[0];
 	                        changed = true;
 	                    }
+	                    // if (possibleValues.length > 1) {
+	                    // 	return false
+	                    // }
 	                }
 	            }
 	            if (changed === false){
